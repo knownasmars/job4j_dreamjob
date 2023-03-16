@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.dreamjob.repository.CandidateRepository;
 import ru.job4j.dreamjob.repository.MemoryCandidateRepository;
 
-
 @Controller
 @RequestMapping("/candidates")
 public class CandidateController {
