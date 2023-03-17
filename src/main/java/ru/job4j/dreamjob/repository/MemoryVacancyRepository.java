@@ -1,63 +1,27 @@
 package ru.job4j.dreamjob.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Vacancy;
-import ru.job4j.dreamjob.utils.HabrCareerDateTimeParser;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class MemoryVacancyRepository implements VacancyRepository {
-
-    private static final MemoryVacancyRepository INSTANCE = new MemoryVacancyRepository();
 
     private int nextId = 1;
 
     private final Map<Integer, Vacancy> vacancies = new HashMap<>();
 
-    private MemoryVacancyRepository() {
-        HabrCareerDateTimeParser h = new HabrCareerDateTimeParser();
-        save(new Vacancy(
-                1,
-                "Intern Java Developer",
-                "Стажер. Вакансия для людей без опыта",
-                h.parse(LocalDateTime.now())
-        ));
-        save(new Vacancy(
-                2,
-                "Junior Java Developer",
-                "Начинающий. Вакансия для людей с опытом полгода",
-                LocalDateTime.now()
-        ));
-        save(new Vacancy(3,
-                "Junior+ Java Developer",
-                "Специалист. Вакансия для тех, кто закончил Job4j",
-                h.parse(LocalDateTime.now())
-        ));
-        save(new Vacancy(
-                4,
-                "Middle Java Developer",
-                "Профессионал. Вакансия для людей с опытом > 1 года",
-                h.parse(LocalDateTime.now())
-        ));
-        save(new Vacancy(
-                5,
-                "Middle+ Java Developer",
-                "Профессионал. Вакансия для людей с опытом > 2 лет",
-                h.parse(LocalDateTime.now())
-        ));
-        save(new Vacancy(
-                6,
-                "Senior Java Developer",
-                "Профессионал. Вакансия для людей с опытом > 3 лет",
-                h.parse(LocalDateTime.now())
-        ));
-    }
-
-    public static MemoryVacancyRepository getInstance() {
-        return INSTANCE;
+    public MemoryVacancyRepository() {
+        save(new Vacancy(0, "Intern Java Developer", "Стажер Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Junior Java Developer", "Младший Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Junior+ Java Developer", "Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Middle Java Developer", "Старший Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Middle+ Java Developer", "Ведущий Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Senior Java Developer", "Главный Java разработчик", LocalDateTime.now()));
     }
 
     @Override
