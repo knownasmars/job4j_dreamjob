@@ -5,10 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Vacancy;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Repository
 @ThreadSafe
@@ -16,27 +16,21 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     private final AtomicInteger nextId = new AtomicInteger(1);
 
-    private final ConcurrentHashMap<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
+    private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     public MemoryVacancyRepository() {
-        save(Vacancy.of(0, "Intern Java Developer", "Стажер Java разработчик", LocalDateTime.now()));
-        save(Vacancy.of(0, "Junior Java Developer", "Младший Java разработчик", LocalDateTime.now()));
-        save(Vacancy.of(0, "Junior+ Java Developer", "Java разработчик", LocalDateTime.now()));
-        save(Vacancy.of(0, "Middle Java Developer", "Старший Java разработчик", LocalDateTime.now()));
-        save(Vacancy.of(0, "Middle+ Java Developer", "Ведущий Java разработчик", LocalDateTime.now()));
-        save(Vacancy.of(0, "Senior Java Developer", "Главный Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Intern Java Developer", "Стажер Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Junior Java Developer", "Младший Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Junior+ Java Developer", "Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Middle Java Developer", "Старший Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Middle+ Java Developer", "Ведущий Java разработчик", LocalDateTime.now()));
+        save(new Vacancy(0, "Senior Java Developer", "Главный Java разработчик", LocalDateTime.now()));
     }
 
     @Override
     public Vacancy save(Vacancy vacancy) {
         vacancy.setId(nextId.getAndIncrement());
-        vacancies.put(vacancy.getId(),
-                Vacancy.of(
-                        vacancy.getId(),
-                        vacancy.getTitle(),
-                        vacancy.getDescription(),
-                        vacancy.getCreationDate()
-                ));
+        vacancies.put(vacancy.getId(), vacancy);
         return vacancy;
     }
 
@@ -49,7 +43,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
     public boolean update(Vacancy vacancy) {
         return vacancies.computeIfPresent(
                 vacancy.getId(), (id, oldVacancy) ->
-                        Vacancy.of(
+                        new Vacancy(
                                 oldVacancy.getId(),
                                 vacancy.getTitle(),
                                 vacancy.getDescription(),
@@ -64,13 +58,6 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public Collection<Vacancy> findAll() {
-        return vacancies.values()
-                .stream()
-                .map(x -> Vacancy.of(
-                        x.getId(),
-                        x.getTitle(),
-                        x.getDescription(),
-                        x.getCreationDate()))
-                .collect(Collectors.toList());
+        return vacancies.values();
     }
 }

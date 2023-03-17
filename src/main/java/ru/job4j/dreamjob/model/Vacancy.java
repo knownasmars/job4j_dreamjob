@@ -16,13 +16,11 @@ public class Vacancy {
     public Vacancy() {
     }
 
-    public static Vacancy of(int id, String title, String description, LocalDateTime creationDate) {
-        Vacancy vacancy = new Vacancy();
-        vacancy.id = id;
-        vacancy.title = title;
-        vacancy.description = description;
-        vacancy.creationDate = creationDate;
-        return vacancy;
+    public Vacancy(int id, String title, String description, LocalDateTime creationDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.creationDate = creationDate;
     }
 
     public int getId() {

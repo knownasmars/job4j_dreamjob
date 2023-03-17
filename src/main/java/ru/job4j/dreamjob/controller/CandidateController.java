@@ -31,13 +31,7 @@ public class CandidateController {
 
     @PostMapping("/create")
     public String create(@ModelAttribute Candidate candidate) {
-        candidateService.save(
-                Candidate.of(
-                        candidate.getId(),
-                        candidate.getName(),
-                        candidate.getDescription(),
-                        candidate.getCreationDate()
-                ));
+        candidateService.save(candidate);
         return "redirect:/candidates";
     }
 
@@ -54,14 +48,7 @@ public class CandidateController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Candidate candidate, Model model) {
-        var isUpdated = candidateService.update(
-                Candidate.of(
-                        candidate.getId(),
-                        candidate.getName(),
-                        candidate.getDescription(),
-                        candidate.getCreationDate()
-                )
-        );
+        var isUpdated = candidateService.update(candidate);
         if (!isUpdated) {
             model.addAttribute("message", "Кандидат с указанным идентификатором не найден");
             return "errors/404";

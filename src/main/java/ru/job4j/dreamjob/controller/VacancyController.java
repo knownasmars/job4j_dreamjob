@@ -31,13 +31,7 @@ public class VacancyController {
 
     @PostMapping("/create")
     public String create(@ModelAttribute Vacancy vacancy) {
-        vacancyService.save(
-                Vacancy.of(
-                        vacancy.getId(),
-                        vacancy.getTitle(),
-                        vacancy.getDescription(),
-                        vacancy.getCreationDate()
-        ));
+        vacancyService.save(vacancy);
         return "redirect:/vacancies";
     }
 
@@ -54,13 +48,7 @@ public class VacancyController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Vacancy vacancy, Model model) {
-        var isUpdated = vacancyService.update(
-                Vacancy.of(
-                        vacancy.getId(),
-                        vacancy.getTitle(),
-                        vacancy.getDescription(),
-                        vacancy.getCreationDate())
-        );
+        var isUpdated = vacancyService.update(vacancy);
         if (!isUpdated) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
