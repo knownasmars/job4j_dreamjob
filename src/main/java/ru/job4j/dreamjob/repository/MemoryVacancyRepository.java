@@ -1,33 +1,42 @@
 package ru.job4j.dreamjob.repository;
 
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Vacancy;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
+@ThreadSafe
 public class MemoryVacancyRepository implements VacancyRepository {
 
-    private int nextId = 1;
+    private final AtomicInteger nextId = new AtomicInteger(1);
 
-    private final Map<Integer, Vacancy> vacancies = new HashMap<>();
+    private final ConcurrentHashMap<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     public MemoryVacancyRepository() {
-        save(new Vacancy(0, "Intern Java Developer", "Стажер Java разработчик", LocalDateTime.now()));
-        save(new Vacancy(0, "Junior Java Developer", "Младший Java разработчик", LocalDateTime.now()));
-        save(new Vacancy(0, "Junior+ Java Developer", "Java разработчик", LocalDateTime.now()));
-        save(new Vacancy(0, "Middle Java Developer", "Старший Java разработчик", LocalDateTime.now()));
-        save(new Vacancy(0, "Middle+ Java Developer", "Ведущий Java разработчик", LocalDateTime.now()));
-        save(new Vacancy(0, "Senior Java Developer", "Главный Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Intern Java Developer", "Стажер Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Junior Java Developer", "Младший Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Junior+ Java Developer", "Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Middle Java Developer", "Старший Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Middle+ Java Developer", "Ведущий Java разработчик", LocalDateTime.now()));
+        save(Vacancy.of(0, "Senior Java Developer", "Главный Java разработчик", LocalDateTime.now()));
     }
 
     @Override
     public Vacancy save(Vacancy vacancy) {
-        vacancy.setId(nextId++);
-        vacancies.put(vacancy.getId(), vacancy);
+        vacancy.setId(nextId.getAndIncrement());
+        vacancies.put(vacancy.getId(),
+                Vacancy.of(
+                        vacancy.getId(),
+                        vacancy.getTitle(),
+                        vacancy.getDescription(),
+                        vacancy.getCreationDate()
+                ));
         return vacancy;
     }
 
@@ -40,7 +49,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
     public boolean update(Vacancy vacancy) {
         return vacancies.computeIfPresent(
                 vacancy.getId(), (id, oldVacancy) ->
-                        new Vacancy(
+                        Vacancy.of(
                                 oldVacancy.getId(),
                                 vacancy.getTitle(),
                                 vacancy.getDescription(),
@@ -55,6 +64,13 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public Collection<Vacancy> findAll() {
-        return vacancies.values();
+        return vacancies.values()
+                .stream()
+                .map(x -> Vacancy.of(
+                        x.getId(),
+                        x.getTitle(),
+                        x.getDescription(),
+                        x.getCreationDate()))
+                .collect(Collectors.toList());
     }
 }

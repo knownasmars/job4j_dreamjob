@@ -1,5 +1,6 @@
 package ru.job4j.dreamjob.controller;
 
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,7 @@ import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.service.CandidateService;
 
 @Controller
+@ThreadSafe
 @RequestMapping("/candidates")
 public class CandidateController {
 
@@ -29,7 +31,13 @@ public class CandidateController {
 
     @PostMapping("/create")
     public String create(@ModelAttribute Candidate candidate) {
-        candidateService.save(candidate);
+        candidateService.save(
+                Candidate.of(
+                        candidate.getId(),
+                        candidate.getName(),
+                        candidate.getDescription(),
+                        candidate.getCreationDate()
+                ));
         return "redirect:/candidates";
     }
 
@@ -46,7 +54,14 @@ public class CandidateController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Candidate candidate, Model model) {
-        var isUpdated = candidateService.update(candidate);
+        var isUpdated = candidateService.update(
+                Candidate.of(
+                        candidate.getId(),
+                        candidate.getName(),
+                        candidate.getDescription(),
+                        candidate.getCreationDate()
+                )
+        );
         if (!isUpdated) {
             model.addAttribute("message", "Кандидат с указанным идентификатором не найден");
             return "errors/404";

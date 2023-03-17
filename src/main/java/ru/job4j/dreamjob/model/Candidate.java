@@ -16,11 +16,13 @@ public class Candidate {
     public Candidate() {
     }
 
-    public Candidate(int id, String name, String description, LocalDateTime creationDate) {
-        this.id = id;
-        this.name  = name;
-        this.description = description;
-        this.creationDate = creationDate;
+    public static Candidate of(int id, String name, String description, LocalDateTime creationDate) {
+        Candidate candidate = new Candidate();
+        candidate.id = id;
+        candidate.name = name;
+        candidate.description = description;
+        candidate.creationDate = creationDate;
+        return candidate;
     }
 
     public int getId() {
