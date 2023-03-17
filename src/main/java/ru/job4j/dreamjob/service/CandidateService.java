@@ -1,5 +1,6 @@
 package ru.job4j.dreamjob.service;
 
+import ru.job4j.dreamjob.dto.FileDto;
 import ru.job4j.dreamjob.model.Candidate;
 
 import java.util.Collection;
@@ -7,11 +8,11 @@ import java.util.Optional;
 
 public interface CandidateService {
 
-    Candidate save(Candidate vacancy);
+    Candidate save(Candidate candidate, FileDto imgage);
 
     boolean deleteById(int id);
 
-    boolean update(Candidate vacancy);
+    boolean update(Candidate candidate, FileDto imgage);
 
     Optional<Candidate> findById(int id);
 
