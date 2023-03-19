@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface CandidateRepository {
 
-    Candidate save(Candidate vacancy);
+    Candidate save(Candidate candidate);
 
     boolean deleteById(int id);
 
-    boolean update(Candidate vacancy);
+    boolean update(Candidate candidate);
 
     Optional<Candidate> findById(int id);
 
