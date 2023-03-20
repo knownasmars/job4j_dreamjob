@@ -3,11 +3,10 @@ package ru.job4j.dreamjob.repository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2oException;
 import ru.job4j.dreamjob.configuration.DatasourceConfiguration;
 import ru.job4j.dreamjob.model.User;
 
-import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.*;
@@ -49,7 +48,8 @@ class Sql2oUserRepositoryTest {
         var optionalUser =
                 sql2oUserRepository.save(new User(5, name, email, password));
         var expected =
-                sql2oUserRepository.findByEmail(optionalUser.get().getEmail());
+                sql2oUserRepository.findByEmailAndPassword(
+                        optionalUser.get().getEmail(), optionalUser.get().getPassword());
         assertThat(optionalUser).usingRecursiveComparison().isEqualTo(expected);
     }
 
@@ -60,7 +60,6 @@ class Sql2oUserRepositoryTest {
         String password = "555";
         User uvasya = new User(5, name, email, password);
         sql2oUserRepository.save(uvasya);
-        assertThatThrownBy(() -> sql2oUserRepository.save(uvasya))
-                .isInstanceOf(Sql2oException.class);
+        assertThat(sql2oUserRepository.save(uvasya)).isEqualTo(Optional.empty());
     }
 }
